@@ -1,6 +1,6 @@
 # Import Once
 
-[Eyeglass](https://github.com/sass-eyeglass/eyeglass) style importer for generally working with Node Sass.
+[Eyeglass](https://github.com/sass-eyeglass/eyeglass) importer for generally working with Node Sass.
 
 ## Installation
 
