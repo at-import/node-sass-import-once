@@ -1,6 +1,6 @@
 {
   "name": "node-sass-import-once",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Eyeglass style import-once importer for Node Sass",
   "main": "import-once.js",
   "scripts": {
