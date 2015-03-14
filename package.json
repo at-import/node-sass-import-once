@@ -11,7 +11,7 @@
     "url": "https://github.com/at-import/node-sass-import-once.git"
   },
   "keywords": [
-    "Libsass",
+    "libsass",
     "node-sass",
     "import-once",
     "importer",
@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/at-import/node-sass-import-once/issues"
   },
-  "homepage": "https://github.com/at-import/node-sass-import-once"
+  "homepage": "https://github.com/at-import/node-sass-import-once",
+  "dependencies": {
+    "node-sass": ">=2.0.0"
+  }
 }
