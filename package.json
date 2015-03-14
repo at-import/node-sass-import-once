@@ -1,0 +1,26 @@
+{
+  "name": "node-sass-import-once",
+  "version": "0.0.1",
+  "description": "Eyeglass style import-once importer for Node Sass",
+  "main": "import-once.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/at-import/node-sass-import-once.git"
+  },
+  "keywords": [
+    "Libsass",
+    "node-sass",
+    "import-once",
+    "importer",
+    "sass"
+  ],
+  "author": "Sam Richard <sam@snug.ug>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/at-import/node-sass-import-once/issues"
+  },
+  "homepage": "https://github.com/at-import/node-sass-import-once"
+}
