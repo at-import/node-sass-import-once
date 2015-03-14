@@ -18,7 +18,7 @@
     "sass"
   ],
   "author": "Sam Richard <sam@snug.ug>",
-  "license": "MIT",
+  "license": "Apache License 2.0",
   "bugs": {
     "url": "https://github.com/at-import/node-sass-import-once/issues"
   },
