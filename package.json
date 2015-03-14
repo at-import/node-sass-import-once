@@ -1,6 +1,6 @@
 {
   "name": "node-sass-import-once",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Eyeglass style import-once importer for Node Sass",
   "main": "import-once.js",
   "scripts": {
@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/at-import/node-sass-import-once/issues"
   },
-  "homepage": "https://github.com/at-import/node-sass-import-once"
+  "homepage": "https://github.com/at-import/node-sass-import-once",
+  "dependencies": {
+    "node-sass": ">=2.0.0"
+  }
 }
