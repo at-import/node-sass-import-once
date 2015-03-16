@@ -60,18 +60,76 @@ function getFileNames(abstractName) {
     });
 
     // Index Files
-    ['', '_'].forEach(function(prefix) {
-      ['.scss', '.sass'].forEach(function(ext) {
-        names.push(path.join(abstractName, prefix + 'index' + ext));
+    if (this.options.importOnce.index) {
+      ['', '_'].forEach(function(prefix) {
+	['.scss', '.sass'].forEach(function(ext) {
+	  names.push(path.join(abstractName, prefix + 'index' + ext));
+	});
       });
-    });
+    }
+
+    // CSS Files
+    if (this.options.importOnce.css) {
+      names.push(path.join(abstractName, basename + '.css'));
+    }
+
   }
   return names;
 }
 
+/**
+  * Build list of potential Bower imports
+**/
+function getBowerNames(uri) {
+  var gfn = getFileNames.bind(this);
+
+  var bowerrc = path.resolve(process.cwd(), '.bowerrc'),
+      bowerPath = 'bower_components',
+      core = uri.split('/')[0],
+      paths = [],
+      results = [];
+
+  uri = makeFsPath(uri);
+
+  if (fs.existsSync(bowerrc)) {
+    bowerrc = JSON.parse(fs.readFileSync(bowerrc, 'utf-8'));
+    if (bowerrc.directory) {
+      bowerPath = bowerrc.directory;
+    }
+  }
+
+  // Resolve the path to the Bower repository;
+  bowerPath = path.resolve(process.cwd(), bowerPath);
+
+  // Basic, add import path-esque
+  paths.push(path.resolve(bowerPath, uri));
+  // For those projects that were Ruby gems and are now distributed through Bower
+  if (core !== '..' && core !== '.') {
+    paths.push(path.resolve(bowerPath, core, 'stylesheets', uri));
+    paths.push(path.resolve(bowerPath, core + '-sass', 'stylesheets', uri));
+    paths.push(path.resolve(bowerPath, 'sass-' + core, 'stylesheets', uri));
+  }
+
+  paths.forEach(function(path) {
+    results = results.concat(gfn(path));
+  });
+
+  return results;
+}
+
 // This is a bootstrap function for calling readFirstFile.
 function readAbstractFile(uri, abstractName, cb) {
-  readFirstFile(uri, getFileNames(abstractName), cb);
+  var gfn = getFileNames.bind(this),
+      gbn = getBowerNames.bind(this);
+
+  var files = gfn(abstractName);
+
+  // console.log(this.options.importOnce);
+  if (this.options.importOnce.bower) {
+    files = files.concat(gbn(uri));
+  }
+
+  readFirstFile(uri, files, cb);
 }
 
 /**
