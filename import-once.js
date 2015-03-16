@@ -45,6 +45,8 @@ function importOnce(data, done) {
  *
 **/
 function getFileNames(abstractName) {
+  // console.log(this.options.importOnce);
+
   var names = [];
   if (path.extname(abstractName)) {
     names.push(abstractName);
@@ -62,9 +64,9 @@ function getFileNames(abstractName) {
     // Index Files
     if (this.options.importOnce.index) {
       ['', '_'].forEach(function(prefix) {
-	['.scss', '.sass'].forEach(function(ext) {
-	  names.push(path.join(abstractName, prefix + 'index' + ext));
-	});
+        ['.scss', '.sass'].forEach(function(ext) {
+          names.push(path.join(abstractName, prefix + 'index' + ext));
+        });
       });
     }
 
@@ -110,6 +112,7 @@ function getBowerNames(uri) {
     paths.push(path.resolve(bowerPath, 'sass-' + core, 'stylesheets', uri));
   }
 
+  // Get the file names for all of the paths!
   paths.forEach(function(path) {
     results = results.concat(gfn(path));
   });
@@ -145,9 +148,7 @@ function readFirstFile(uri, filenames, cb, examinedFiles) {
       if (filenames.length) {
         readFirstFile(uri, filenames, cb, examinedFiles);
       } else {
-        cb(new Error('Could not import ' + uri +
-                     ' from any of the following locations: ' +
-                     examinedFiles.join(', ')));
+        cb(new Error('Could not import `' + uri + '` from any of the following locations:\n  ' + examinedFiles.join('\n  ')));
       }
     } else {
       cb(null, {
@@ -164,20 +165,42 @@ function readFirstFile(uri, filenames, cb, examinedFiles) {
 function importer(uri, prev, done) {
   var isRealFile = fs.existsSync(prev),
       io = importOnce.bind(this),
+      raf = readAbstractFile.bind(this),
       file;
 
+  // Ensure options are available
+  if (!this.options.importOnce) {
+    this.options.importOnce = {};
+  }
+
+  // Set default index import
+  if (!this.options.importOnce.index) {
+    this.options.importOnce.index = false;
+  }
+
+  // Set default bower import
+  if (!this.options.importOnce.bower) {
+    this.options.importOnce.bower = false;
+  }
+
+  // Set default css import
+  if (!this.options.importOnce.css) {
+    this.options.importOnce.css = false;
+  }
+
+  // Create an import cache if it doesn't exist
   if (!this._importOnceCache) {
     this._importOnceCache = {};
   }
 
   if (isRealFile) {
     file = path.resolve(path.dirname(prev), makeFsPath(uri));
-    readAbstractFile(uri, file, function (err, data) {
+    raf(uri, file, function (err, data) {
       if (err) {
         console.log(err.toString());
         done({});
       } else {
-	io(data, done);
+        io(data, done);
       }
     });
   }
