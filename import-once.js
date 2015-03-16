@@ -72,7 +72,7 @@ function getFileNames(abstractName) {
 
     // CSS Files
     if (this.options.importOnce.css) {
-      names.push(path.join(abstractName, basename + '.css'));
+      names.push(abstractName + '.css');
     }
 
   }
@@ -123,7 +123,8 @@ function getBowerNames(uri) {
 // This is a bootstrap function for calling readFirstFile.
 function readAbstractFile(uri, abstractName, cb) {
   var gfn = getFileNames.bind(this),
-      gbn = getBowerNames.bind(this);
+      gbn = getBowerNames.bind(this),
+      css = this.options.importOnce.css;
 
   var files = gfn(abstractName);
 
@@ -132,29 +133,45 @@ function readAbstractFile(uri, abstractName, cb) {
     files = files.concat(gbn(uri));
   }
 
-  readFirstFile(uri, files, cb);
+  readFirstFile(uri, files, css, cb);
 }
 
 /**
  * Asynchronously walks the file list until a match is found. If
  * no matches are found, calls the callback with an error
 **/
-function readFirstFile(uri, filenames, cb, examinedFiles) {
+function readFirstFile(uri, filenames, css, cb, examinedFiles) {
   var filename = filenames.shift();
   examinedFiles = examinedFiles || [];
   examinedFiles.push(filename);
   fs.readFile(filename, function(err, data) {
     if (err) {
       if (filenames.length) {
-        readFirstFile(uri, filenames, cb, examinedFiles);
+        readFirstFile(uri, filenames, css, cb, examinedFiles);
       } else {
         cb(new Error('Could not import `' + uri + '` from any of the following locations:\n  ' + examinedFiles.join('\n  ')));
       }
     } else {
-      cb(null, {
-        contents: data,
-        file: filename
-      });
+      if (css) {
+        if (path.extname(filename) === '.css') {
+          cb(null, {
+            contents: data.toString(),
+            file: filename
+          });
+        }
+        else {
+          cb(null, {
+            contents: data,
+            file: filename
+          });
+        }
+      }
+      else {
+        cb(null, {
+          contents: data,
+          file: filename
+        });
+      }
     }
   });
 }
