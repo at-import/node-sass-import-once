@@ -5,8 +5,7 @@
 'use strict';
 
 var fs = require('fs'),
-    path = require('path'),
-    importedFiles = {};
+    path = require('path');
 
 /**
  * All imports use the forward slash as a directory
@@ -25,13 +24,13 @@ function makeFsPath(importPath) {
   * Determines if a file should be imported or not
 **/
 function importOnce(data, done) {
-  if (importedFiles[data.file]) {
+  if (this._importOnceCache[data.file]) {
     done({
       contents: '',
       filename: 'already-imported:' + data.file
     });
   } else {
-    importedFiles[data.file] = true;
+    this._importOnceCache[data.file] = true;
     done(data);
   }
 }
@@ -53,13 +52,14 @@ function getFileNames(abstractName) {
     var directory = path.dirname(abstractName);
     var basename = path.basename(abstractName);
 
+    // Standard File Names
     ['', '_'].forEach(function(prefix) {
       ['.scss', '.sass'].forEach(function(ext) {
         names.push(path.join(directory, prefix + basename + ext));
       });
     });
 
-    // can avoid these if we check if the path is a directory first.
+    // Index Files
     ['', '_'].forEach(function(prefix) {
       ['.scss', '.sass'].forEach(function(ext) {
         names.push(path.join(abstractName, prefix + 'index' + ext));
@@ -105,7 +105,12 @@ function readFirstFile(uri, filenames, cb, examinedFiles) {
 **/
 function importer(uri, prev, done) {
   var isRealFile = fs.existsSync(prev),
+      io = importOnce.bind(this),
       file;
+
+  if (!this._importOnceCache) {
+    this._importOnceCache = {};
+  }
 
   if (isRealFile) {
     file = path.resolve(path.dirname(prev), makeFsPath(uri));
@@ -114,7 +119,7 @@ function importer(uri, prev, done) {
         console.log(err.toString());
         done({});
       } else {
-        importOnce(data, done);
+	io(data, done);
       }
     });
   }
