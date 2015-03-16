@@ -24,6 +24,6 @@
   },
   "homepage": "https://github.com/at-import/node-sass-import-once",
   "dependencies": {
-    "node-sass": ">=2.0.0"
+    "node-sass": "^3.0.0-pre"
   }
 }
