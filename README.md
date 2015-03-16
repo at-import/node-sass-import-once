@@ -8,7 +8,7 @@
 $ npm install node-sass-import-once --save-dev
 ```
 
-**Requires [Node Sass](https://github.com/sass/node-sass) >= v2.0.0**
+**Requires [Node Sass](https://github.com/sass/node-sass) >= v3.0.0-pre**
 
 ## Usage
 
@@ -18,7 +18,12 @@ var sass = require('node-sass');,
 
 sass.render({
   file: scss_filename,
-  importer: importOnce
+  importer: importOnce,
+  importOnce: {
+    index: false,
+    css: false,
+    bower: false
+  }
 });
 ```
 
@@ -26,5 +31,8 @@ If you are using Gulp or Grunt to compile (or similiar), require `node-sass-impo
 
 ## Features
 
-* All imports will only be imported once (this means everything can declare its own dependencies! Yay!)
-* Folders can contain an index file (`index.scss`, `index.sass`, `_index.scss`, `_index.sass`) that will automatically be imported if just the folder name is imported. For instance, `@import 'partials';` will try and import `(_)partials.s(c|a)ss` first, then `partials/(_)index.s(c|a)ss`.
+Node Sass Import Once will ensure that each file import is only imported once. In addition to that, the following options are available:
+
+* **index** - Allows folders to contain an index file (`index.scss`, `index.sass`, `_index.scss`, `_index.sass`) that will automatically be imported if just the folder name is imported. For instance, `@import 'partials';` will try and import `(_)partials.s(c|a)ss` first, then `partials/(_)index.s(c|a)ss`.
+* **css** - Allows a CSS file to be imported directly into your Sass files. Simply don't include a file extension, and if it's available as a CSS file it'll be imported!
+* **bower** - Automatically parses your [Bower](http://bower.io/) directory for the files you're requested. Will look for the file in `bower_components` (or specified directory from `.bowerrc`), `bower_components/{module-name}/stylesheets`, `bower_components/{module-name}-sass/stylesheets`, `bower_components/sass-{module-name}/stylesheets`, `bower_components/{module-name}/sass`, `bower_components/{module-name}-sass/sass`, `bower_components/sass-{module-name}/sass`. `{module-name}` is the first section of your import path, so in `@import 'breakpoint'` **breakpoint** would be your module name and in `@import 'toolkit/kickstart` **toolkit** would be your module name.
