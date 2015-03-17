@@ -254,6 +254,6 @@ function importer(uri, prev, done) {
 }
 
 /**
-  * Exports file
+  * Exports the importer
 **/
 module.exports = importer;
