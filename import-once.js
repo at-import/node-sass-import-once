@@ -129,13 +129,34 @@ function getBowerNames(uri) {
   return results;
 }
 
+/**
+  * getIn
+**/
+function getIncludePaths(uri) {
+  // From https://github.com/sass/node-sass/issues/762#issuecomment-80580955
+  var arr = this.options.includePaths.split(path.delimiter),
+      gfn = getFileNames.bind(this),
+      paths = [];
+
+  arr.forEach(function(includePath) {
+    paths = paths.concat(gfn(path.resolve(process.cwd(), includePath, uri)));
+  });
+
+  return paths;
+}
+
 // This is a bootstrap function for calling readFirstFile.
 function readAbstractFile(uri, abstractName, cb) {
   var gfn = getFileNames.bind(this),
+      gip = getIncludePaths.bind(this),
       gbn = getBowerNames.bind(this),
       css = this.options.importOnce.css;
 
   var files = gfn(abstractName);
+
+  if (this.options.includePaths) {
+    files = files.concat(gip(uri));
+  }
 
   // console.log(this.options.importOnce);
   if (this.options.importOnce.bower) {
