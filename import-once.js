@@ -114,6 +114,11 @@ function getBowerNames(uri) {
     paths.push(path.resolve(bowerPath, core, 'sass', uri));
     paths.push(path.resolve(bowerPath, core + '-sass', 'sass', uri));
     paths.push(path.resolve(bowerPath, 'sass-' + core, 'sass', uri));
+
+    if (this.options.importOnce.css) {
+      paths.push(path.resolve(bowerPath, core, 'dist', uri));
+      paths.push(path.resolve(bowerPath, core, 'dist', 'css', uri));
+    }
   }
 
   // Get the file names for all of the paths!
