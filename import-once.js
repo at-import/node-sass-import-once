@@ -45,8 +45,6 @@ function importOnce(data, done) {
  *
 **/
 function getFileNames(abstractName) {
-  // console.log(this.options.importOnce);
-
   var names = [];
   if (path.extname(abstractName)) {
     names.push(abstractName);
@@ -158,7 +156,6 @@ function readAbstractFile(uri, abstractName, cb) {
     files = files.concat(gip(uri));
   }
 
-  // console.log(this.options.importOnce);
   if (this.options.importOnce.bower) {
     files = files.concat(gbn(uri));
   }
@@ -182,26 +179,10 @@ function readFirstFile(uri, filenames, css, cb, examinedFiles) {
         cb(new Error('Could not import `' + uri + '` from any of the following locations:\n  ' + examinedFiles.join('\n  ')));
       }
     } else {
-      if (css) {
-        if (path.extname(filename) === '.css') {
-          cb(null, {
-            contents: data.toString(),
-            file: filename
-          });
-        }
-        else {
-          cb(null, {
-            contents: data,
-            file: filename
-          });
-        }
-      }
-      else {
-        cb(null, {
-          contents: data,
-          file: filename
-        });
-      }
+      cb(null, {
+        contents: data.toString(),
+        file: filename
+      });
     }
   });
 }
