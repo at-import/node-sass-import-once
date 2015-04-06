@@ -1,6 +1,6 @@
-# Import Once
+# Import Once [![npm version](https://badge.fury.io/js/node-sass-import-once.svg)](http://badge.fury.io/js/node-sass-import-once) [![Build Status](https://travis-ci.org/at-import/node-sass-import-once.svg)](https://travis-ci.org/at-import/node-sass-import-once)
 
-[Eyeglass](https://github.com/sass-eyeglass/eyeglass) importer for generally working with Node Sass.
+General `import-once` importer for [`node-sass`](https://github.com/sass/node-sass) inspired by [Eyeglass](https://github.com/sass-eyeglass/eyeglass).
 
 ## Installation
 
@@ -8,7 +8,7 @@
 $ npm install node-sass-import-once --save-dev
 ```
 
-**Requires [Node Sass](https://github.com/sass/node-sass) >= v3.0.0-pre**
+**Requires [Node Sass](https://github.com/sass/node-sass) >= v3.0.0-alpha.5**
 
 ## Usage
 
