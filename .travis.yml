@@ -7,5 +7,4 @@ before_install:
   - npm install -g bower
   - cd tests
   - bower install -f
-script:
-  - npm test
+  - cd ..
