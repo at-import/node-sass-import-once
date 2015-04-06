@@ -4,11 +4,11 @@ var should = require('should'),
     sass = require('node-sass'),
     path = require('path'),
     fs = require('fs'),
-    importer = require('../import-once');
+    importer = require('../index');
 
 var filePath = function (file) {
   return path.join(path.join(__dirname, 'sass'), file);
-}
+};
 
 describe('import-once is a custom node-sass importer', function () {
   it('should import files only once', function (done) {
@@ -22,6 +22,9 @@ describe('import-once is a custom node-sass importer', function () {
       'file': file,
       'importer': importer
     }, function (err, result) {
+      if (err) {
+        throw err;
+      }
       should.exist(result);
       result.stats.includedFiles.should.eql(expectedIncludes);
       String(result.css).should.equal(
@@ -45,6 +48,9 @@ describe('import-once is a custom node-sass importer', function () {
         'index': true
       }
     }, function (err, result) {
+      if (err) {
+        throw err;
+      }
       should.exist(result);
       result.stats.includedFiles.should.eql(expectedIncludes);
       String(result.css).should.equal(
@@ -68,6 +74,9 @@ describe('import-once is a custom node-sass importer', function () {
         'css': true
       }
     }, function (err, result) {
+      if (err) {
+        throw err;
+      }
       should.exist(result);
       result.stats.includedFiles.should.eql(expectedIncludes);
       // console.log(result.css.toString());
@@ -109,6 +118,9 @@ describe('import-once is a custom node-sass importer', function () {
         'bower': true
       }
     }, function (err, result) {
+      if (err) {
+        throw err;
+      }
       should.exist(result);
       result.stats.includedFiles.should.eql(expectedIncludes);
       // console.log(result.css.toString());
@@ -133,6 +145,9 @@ describe('import-once is a custom node-sass importer', function () {
         'custom'
       ]
     }, function (err, result) {
+      if (err) {
+        throw err;
+      }
       should.exist(result);
       // console.log(result.stats.includedFiles);
       result.stats.includedFiles.should.eql(expectedIncludes);
@@ -159,6 +174,9 @@ describe('import-once is a custom node-sass importer', function () {
         'bower': true
       }
     }, function (err, result) {
+      if (err) {
+        throw err;
+      }
       should.exist(result);
       result.stats.includedFiles.should.eql(expectedIncludes);
       // console.log(result.css.toString());
@@ -168,6 +186,4 @@ describe('import-once is a custom node-sass importer', function () {
       done();
     });
   });
-
-
 });

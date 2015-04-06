@@ -12,28 +12,29 @@ var fs = require('fs'),
  * delimeter. This function converts to the filesystem's
  * delimeter if it uses an alternate.
 **/
-function makeFsPath(importPath) {
+var makeFsPath = function makeFsPath(importPath) {
   var fsPath = importPath;
   if (path.sep !== '/') {
     fsPath = fsPath.replace(/\//, path.sep);
   }
   return fsPath;
-}
+};
 
 /**
   * Determines if a file should be imported or not
 **/
-function importOnce(data, done) {
+var importOnce = function importOnce(data, done) {
   if (this._importOnceCache[data.file]) {
     done({
-      contents: '',
-      filename: 'already-imported:' + data.file
+      'contents': '',
+      'filename': 'already-imported:' + data.file
     });
-  } else {
+  }
+  else {
     this._importOnceCache[data.file] = true;
     done(data);
   }
-}
+};
 
 /**
  * Sass imports are usually in an abstract form in that
@@ -44,25 +45,29 @@ function importOnce(data, done) {
  * then it is left alone.
  *
 **/
-function getFileNames(abstractName) {
-  var names = [];
+var getFileNames = function getFileNames(abstractName) {
+  var names = [],
+      directory,
+      basename;
+
   if (path.extname(abstractName)) {
     names.push(abstractName);
-  } else {
-    var directory = path.dirname(abstractName);
-    var basename = path.basename(abstractName);
+  }
+  else {
+    directory = path.dirname(abstractName);
+    basename = path.basename(abstractName);
 
     // Standard File Names
-    ['', '_'].forEach(function(prefix) {
-      ['.scss', '.sass'].forEach(function(ext) {
+    [ '', '_' ].forEach(function(prefix) {
+      [ '.scss', '.sass' ].forEach(function(ext) {
         names.push(path.join(directory, prefix + basename + ext));
       });
     });
 
     // Index Files
     if (this.options.importOnce.index) {
-      ['', '_'].forEach(function(prefix) {
-        ['.scss', '.sass'].forEach(function(ext) {
+      [ '', '_' ].forEach(function(prefix) {
+        [ '.scss', '.sass' ].forEach(function(ext) {
           names.push(path.join(abstractName, prefix + 'index' + ext));
         });
       });
@@ -72,15 +77,14 @@ function getFileNames(abstractName) {
     if (this.options.importOnce.css) {
       names.push(abstractName + '.css');
     }
-
   }
   return names;
-}
+};
 
 /**
   * Build list of potential Bower imports
 **/
-function getBowerNames(uri) {
+var getBowerNames = function getBowerNames(uri) {
   var gfn = getFileNames.bind(this);
 
   var bowerrc = path.resolve(process.cwd(), '.bowerrc'),
@@ -120,17 +124,17 @@ function getBowerNames(uri) {
   }
 
   // Get the file names for all of the paths!
-  paths.forEach(function(path) {
-    results = results.concat(gfn(path));
+  paths.forEach(function(pathName) {
+    results = results.concat(gfn(pathName));
   });
 
   return results;
-}
+};
 
 /**
   * getIn
 **/
-function getIncludePaths(uri) {
+var getIncludePaths = function getIncludePaths(uri) {
   // From https://github.com/sass/node-sass/issues/762#issuecomment-80580955
   var arr = this.options.includePaths.split(path.delimiter),
       gfn = getFileNames.bind(this),
@@ -141,10 +145,36 @@ function getIncludePaths(uri) {
   });
 
   return paths;
-}
+};
+
+/**
+ * Asynchronously walks the file list until a match is found. If
+ * no matches are found, calls the callback with an error
+**/
+var readFirstFile = function readFirstFile(uri, filenames, css, cb, examinedFiles) {
+  var filename = filenames.shift();
+  examinedFiles = examinedFiles || [];
+  examinedFiles.push(filename);
+  fs.readFile(filename, function(err, data) {
+    if (err) {
+      if (filenames.length) {
+        readFirstFile(uri, filenames, css, cb, examinedFiles);
+      }
+      else {
+        cb(new Error('Could not import `' + uri + '` from any of the following locations:\n  ' + examinedFiles.join('\n  ')));
+      }
+    }
+    else {
+      cb(null, {
+        'contents': data.toString(),
+        'file': filename
+      });
+    }
+  });
+};
 
 // This is a bootstrap function for calling readFirstFile.
-function readAbstractFile(uri, abstractName, cb) {
+var readAbstractFile = function readAbstractFile(uri, abstractName, cb) {
   var gfn = getFileNames.bind(this),
       gip = getIncludePaths.bind(this),
       gbn = getBowerNames.bind(this),
@@ -161,36 +191,12 @@ function readAbstractFile(uri, abstractName, cb) {
   }
 
   readFirstFile(uri, files, css, cb);
-}
-
-/**
- * Asynchronously walks the file list until a match is found. If
- * no matches are found, calls the callback with an error
-**/
-function readFirstFile(uri, filenames, css, cb, examinedFiles) {
-  var filename = filenames.shift();
-  examinedFiles = examinedFiles || [];
-  examinedFiles.push(filename);
-  fs.readFile(filename, function(err, data) {
-    if (err) {
-      if (filenames.length) {
-        readFirstFile(uri, filenames, css, cb, examinedFiles);
-      } else {
-        cb(new Error('Could not import `' + uri + '` from any of the following locations:\n  ' + examinedFiles.join('\n  ')));
-      }
-    } else {
-      cb(null, {
-        contents: data.toString(),
-        file: filename
-      });
-    }
-  });
-}
+};
 
 /**
   * Import the goodies!
 **/
-function importer(uri, prev, done) {
+var importer = function importer(uri, prev, done) {
   var isRealFile = fs.existsSync(prev),
       io = importOnce.bind(this),
       raf = readAbstractFile.bind(this),
@@ -227,12 +233,13 @@ function importer(uri, prev, done) {
       if (err) {
         console.log(err.toString());
         done({});
-      } else {
+      }
+      else {
         io(data, done);
       }
     });
   }
-}
+};
 
 /**
   * Exports the importer
