@@ -10,7 +10,7 @@ var filePath = function (file) {
   return path.join(path.join(__dirname, 'sass'), file);
 };
 
-describe('import-once is a custom node-sass importer', function () {
+describe('import-once', function () {
   it('should import files only once', function (done) {
     var file = filePath('basic-import-once.scss'),
         expectedIncludes = [
@@ -182,6 +182,31 @@ describe('import-once is a custom node-sass importer', function () {
       // console.log(result.css.toString());
       String(result.css).should.equal(
         fs.readFileSync(path.join(__dirname, 'css/imported-bootstrap.css'), 'utf8')
+      );
+      done();
+    });
+  });
+
+  it('should fall back to import paths and bower if data is passed in instead of a file name', function (done) {
+    var file = filePath('basic-import-once.scss'),
+        expectedIncludes = [
+          'partial-with-selectors'
+        ];
+
+    sass.render({
+      'data': fs.readFileSync(file, 'utf-8'),
+      'importer': importer,
+      'includePaths': [
+        path.dirname(file)
+      ]
+    }, function (err, result) {
+      if (err) {
+        throw err;
+      }
+      should.exist(result);
+      result.stats.includedFiles.should.eql(expectedIncludes);
+      String(result.css).should.equal(
+        fs.readFileSync(path.join(__dirname, 'css/basic-import-once.css'), 'utf8')
       );
       done();
     });

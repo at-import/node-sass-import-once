@@ -239,6 +239,17 @@ var importer = function importer(uri, prev, done) {
       }
     });
   }
+  else {
+    raf(uri, process.cwd(), function (err, data) {
+      if (err) {
+        console.log(err.toString());
+        done({});
+      }
+      else {
+        io(data, done);
+      }
+    });
+  }
 };
 
 /**
