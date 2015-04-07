@@ -109,6 +109,7 @@ var getBowerNames = function getBowerNames(uri) {
   paths.push(path.resolve(bowerPath, uri));
   // For those projects that were Ruby gems and are now distributed through Bower
   if (core !== '..' && core !== '.') {
+    paths.push(path.resolve(bowerPath, uri));
     paths.push(path.resolve(bowerPath, core, 'stylesheets', uri));
     paths.push(path.resolve(bowerPath, core + '-sass', 'stylesheets', uri));
     paths.push(path.resolve(bowerPath, 'sass-' + core, 'stylesheets', uri));
