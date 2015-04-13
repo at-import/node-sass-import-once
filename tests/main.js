@@ -131,6 +131,56 @@ describe('import-once', function () {
     });
   });
 
+  it('should import JSON files as a Sass map', function (done) {
+    var file = filePath('import-json.scss'),
+        expectedIncludes = [
+          file,
+          'colors.json'
+        ];
+
+    sass.render({
+      'file': file,
+      'importer': importer
+    }, function (err, result) {
+      if (err) {
+        throw err;
+      }
+      should.exist(result);
+      // console.log(result.stats.includedFiles);
+      result.stats.includedFiles.should.eql(expectedIncludes);
+      // console.log(result.css.toString());
+      String(result.css).should.equal(
+        fs.readFileSync(path.join(__dirname, 'css/imported-json.css'), 'utf8')
+      );
+      done();
+    });
+  });
+
+  it('should import YAML files as a Sass map', function (done) {
+    var file = filePath('import-yaml.scss'),
+        expectedIncludes = [
+          file,
+          'colors.yaml'
+        ];
+
+    sass.render({
+      'file': file,
+      'importer': importer
+    }, function (err, result) {
+      if (err) {
+        throw err;
+      }
+      should.exist(result);
+      // console.log(result.stats.includedFiles);
+      result.stats.includedFiles.should.eql(expectedIncludes);
+      // console.log(result.css.toString());
+      String(result.css).should.equal(
+        fs.readFileSync(path.join(__dirname, 'css/imported-json.css'), 'utf8')
+      );
+      done();
+    });
+  });
+
   it('should support custom include paths', function (done) {
     var file = filePath('import-custom.scss'),
         expectedIncludes = [

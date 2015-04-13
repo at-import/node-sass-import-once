@@ -1,7 +1,7 @@
 {
   "name": "node-sass-import-once",
-  "version": "1.1.2",
-  "description": "Custom importer for node-sass that only allows a file to be imported once. Includes additional import bonuses including importing CSS files directly into Sass, automagic Bower imports, and the ability to import an `index` file from within a folder name. Inspired by Eyeglass.",
+  "version": "1.2.0",
+  "description": "Custom importer for node-sass that only allows a file to be imported once. Includes additional import bonuses including importing CSS files directly into Sass, automagic Bower imports, the ability to import an `index` file from within a folder name, and the ability to import JSON and YAML files as Sass maps. Inspired by Eyeglass.",
   "main": "index.js",
   "scripts": {
     "test": "cd tests && ../node_modules/.bin/mocha ./"
@@ -28,5 +28,8 @@
     "mocha": "^2.2.1",
     "node-sass": "^3.0.0-beta.5",
     "should": "^5.2.0"
+  },
+  "dependencies": {
+    "js-yaml": "^3.2.7"
   }
 }

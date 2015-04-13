@@ -5,6 +5,7 @@
 'use strict';
 
 var fs = require('fs'),
+    yaml = require('js-yaml'),
     path = require('path');
 
 /**
@@ -149,6 +150,70 @@ var getIncludePaths = function getIncludePaths(uri) {
 };
 
 /**
+  * Parse JSON into Sass
+**/
+var parseJSON = function parseJSON(data, filename) {
+  var fileReturn = '$' + path.basename(filename).replace(path.extname(filename), '') + ':',
+      colors;
+
+  data = data.toString();
+
+  if ([ '.yml', '.yaml' ].indexOf(path.extname(filename)) !== -1) {
+    data = yaml.safeLoad(data);
+    data = JSON.stringify(data);
+  }
+
+  data = data.replace(/\{/g, '(');
+  data = data.replace(/\[/g, '(');
+  data = data.replace(/\}/g, ')');
+  data = data.replace(/\]/g, ')');
+
+  fileReturn += data;
+
+  if (fileReturn.substr(fileReturn.length - 1) === '\n') {
+    fileReturn = fileReturn.slice(0, -1);
+  }
+
+  fileReturn += ';';
+
+  //////////////////////////////
+  // Hex colors
+  //////////////////////////////
+  colors = fileReturn.match(/"(#([0-9a-f]{3}){1,2})"/g);
+  if (colors) {
+    colors.forEach(function (color) {
+      fileReturn = fileReturn.replace(color, color.slice(1, -1));
+    });
+  }
+
+
+  //////////////////////////////
+  // RGB/A Colors
+  //////////////////////////////
+  colors = fileReturn.match(/"(rgb|rgba)\((\d{1,3}), (\d{1,3}), (\d{1,3})\)"/g);
+  if (colors) {
+    colors.forEach(function (color) {
+      fileReturn = fileReturn.replace(color, color.slice(1, -1));
+    });
+  }
+
+  //////////////////////////////
+  // HSL/A Colors
+  //////////////////////////////
+  //////////////////////////////
+  // RGB/A Colors
+  //////////////////////////////
+  colors = fileReturn.match(/"(hsl|hsla)\((\d{1,3}), (\d{1,3}), (\d{1,3})\)"/g);
+  if (colors) {
+    colors.forEach(function (color) {
+      fileReturn = fileReturn.replace(color, color.slice(1, -1));
+    });
+  }
+
+  return new Buffer(fileReturn);
+};
+
+/**
  * Asynchronously walks the file list until a match is found. If
  * no matches are found, calls the callback with an error
 **/
@@ -166,6 +231,9 @@ var readFirstFile = function readFirstFile(uri, filenames, css, cb, examinedFile
       }
     }
     else {
+      if ([ '.js', '.json', '.yml', '.yaml' ].indexOf(path.extname(filename)) !== -1) {
+        data = parseJSON(data, filename);
+      }
       cb(null, {
         'contents': data.toString(),
         'file': filename
