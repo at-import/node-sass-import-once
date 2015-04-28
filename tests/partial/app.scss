@@ -1,0 +1,6 @@
+@import 'myvar.scss';
+@import 'myvar.scss';
+
+#import_once {
+    contents: quote($import_once_value);
+}

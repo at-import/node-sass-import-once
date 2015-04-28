@@ -1,0 +1,6 @@
+@if variable-exists(import_once_value) {
+    $import_once_value: $import_once_value + 1;
+}
+@else {
+    $import_once_value: 1;
+}
