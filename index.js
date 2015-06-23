@@ -115,6 +115,13 @@ var getBowerNames = function getBowerNames(uri) {
     paths.push(path.resolve(bowerPath, core + '-sass', 'stylesheets', uri));
     paths.push(path.resolve(bowerPath, 'sass-' + core, 'stylesheets', uri));
 
+    paths.push(path.resolve(bowerPath, core, 'assets', uri));
+    paths.push(path.resolve(bowerPath, core + '-sass', 'assets', uri));
+    paths.push(path.resolve(bowerPath, 'sass-' + core, 'assets', uri));
+    paths.push(path.resolve(bowerPath, core + '-sass', 'assets', 'stylesheets', uri));
+    paths.push(path.resolve(bowerPath, 'sass-' + core, 'assets', 'stylesheets', uri));
+
+
     paths.push(path.resolve(bowerPath, core, 'sass', uri));
     paths.push(path.resolve(bowerPath, core + '-sass', 'sass', uri));
     paths.push(path.resolve(bowerPath, 'sass-' + core, 'sass', uri));
