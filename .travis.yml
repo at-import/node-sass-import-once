@@ -5,6 +5,6 @@ node_js:
   - iojs
 before_install:
   - npm install -g bower
-  - cd tests
+  - cd test
   - bower install -f
   - cd ..
