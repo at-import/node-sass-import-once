@@ -7,7 +7,7 @@
   ],
   "license": "MIT",
   "devDependencies": {
-    "bootstrap": "~3.3.4",
+    "bootstrap": "3.3.4",
     "sass-toolkit": "~2.9.0",
     "breakpoint-sass": "~2.5.0"
   }
