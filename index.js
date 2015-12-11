@@ -1,18 +1,18 @@
 /**
- * Shameless adapted from [Eyeglass](https://github.com/sass-eyeglass/eyeglass)
- *  because I wanted a general-use import-once importer for Node
- **/
+  * Shameless adapted from [Eyeglass](https://github.com/sass-eyeglass/eyeglass)
+  *  because I wanted a general-use import-once importer for Node
+**/
 'use strict';
 
 var fs = require('fs'),
-  yaml = require('js-yaml'),
-  path = require('path');
+    yaml = require('js-yaml'),
+    path = require('path');
 
 /**
  * All imports use the forward slash as a directory
  * delimeter. This function converts to the filesystem's
  * delimeter if it uses an alternate.
- **/
+**/
 var makeFsPath = function makeFsPath(importPath) {
   var fsPath = importPath;
   if (path.sep !== '/') {
@@ -22,8 +22,8 @@ var makeFsPath = function makeFsPath(importPath) {
 };
 
 /**
- * Determines if a file should be imported or not
- **/
+  * Determines if a file should be imported or not
+**/
 var importOnce = function importOnce(data, done) {
   if (this._importOnceCache[data.file]) {
     done({
@@ -45,11 +45,11 @@ var importOnce = function importOnce(data, done) {
  * same possible variations. If the import contains an extension,
  * then it is left alone.
  *
- **/
+**/
 var getFileNames = function getFileNames(abstractName) {
   var names = [],
-    directory,
-    basename;
+      directory,
+      basename;
 
   if (path.extname(abstractName)) {
     names.push(abstractName);
@@ -59,16 +59,16 @@ var getFileNames = function getFileNames(abstractName) {
     basename = path.basename(abstractName);
 
     // Standard File Names
-    ['', '_'].forEach(function (prefix) {
-      ['.scss', '.sass'].forEach(function (ext) {
+    [ '', '_' ].forEach(function(prefix) {
+      [ '.scss', '.sass' ].forEach(function(ext) {
         names.push(path.join(directory, prefix + basename + ext));
       });
     });
 
     // Index Files
     if (this.options.importOnce.index) {
-      ['', '_'].forEach(function (prefix) {
-        ['.scss', '.sass'].forEach(function (ext) {
+      [ '', '_' ].forEach(function(prefix) {
+        [ '.scss', '.sass' ].forEach(function(ext) {
           names.push(path.join(abstractName, prefix + 'index' + ext));
         });
       });
@@ -83,16 +83,16 @@ var getFileNames = function getFileNames(abstractName) {
 };
 
 /**
- * Build list of potential Bower imports
- **/
+  * Build list of potential Bower imports
+**/
 var getBowerNames = function getBowerNames(uri) {
   var gfn = getFileNames.bind(this);
 
   var bowerrc = path.resolve(process.cwd(), '.bowerrc'),
-    bowerPath = 'bower_components',
-    core = uri.split('/')[0],
-    paths = [],
-    results = [];
+      bowerPath = 'bower_components',
+      core = uri.split('/')[0],
+      paths = [],
+      results = [];
 
   uri = makeFsPath(uri);
 
@@ -126,7 +126,7 @@ var getBowerNames = function getBowerNames(uri) {
   }
 
   // Get the file names for all of the paths!
-  paths.forEach(function (pathName) {
+  paths.forEach(function(pathName) {
     results = results.concat(gfn(pathName));
   });
 
@@ -134,15 +134,15 @@ var getBowerNames = function getBowerNames(uri) {
 };
 
 /**
- * getIn
- **/
+  * getIn
+**/
 var getIncludePaths = function getIncludePaths(uri) {
   // From https://github.com/sass/node-sass/issues/762#issuecomment-80580955
   var arr = this.options.includePaths.split(path.delimiter),
-    gfn = getFileNames.bind(this),
-    paths = [];
+      gfn = getFileNames.bind(this),
+      paths = [];
 
-  arr.forEach(function (includePath) {
+  arr.forEach(function(includePath) {
     paths = paths.concat(gfn(path.resolve(process.cwd(), includePath, uri)));
   });
 
@@ -150,15 +150,15 @@ var getIncludePaths = function getIncludePaths(uri) {
 };
 
 /**
- * Parse JSON into Sass
- **/
+  * Parse JSON into Sass
+**/
 var parseJSON = function parseJSON(data, filename) {
   var fileReturn = '$' + path.basename(filename).replace(path.extname(filename), '') + ':',
-    colors;
+      colors;
 
   data = data.toString();
 
-  if (['.yml', '.yaml'].indexOf(path.extname(filename)) !== -1) {
+  if ([ '.yml', '.yaml' ].indexOf(path.extname(filename)) !== -1) {
     data = yaml.safeLoad(data);
     data = JSON.stringify(data);
   }
@@ -216,7 +216,7 @@ var parseJSON = function parseJSON(data, filename) {
 /**
  * Asynchronously walks the file list until a match is found. If
  * no matches are found, calls the callback with an error
- **/
+**/
 var readFirstFile = function readFirstFile(uri, filenames, css, cb, examinedFiles) {
   var filename = filenames.shift();
   examinedFiles = examinedFiles || [];
@@ -235,7 +235,7 @@ var readFirstFile = function readFirstFile(uri, filenames, css, cb, examinedFile
     }
   }
   else {
-    if (['.js', '.json', '.yml', '.yaml'].indexOf(path.extname(filename)) !== -1) {
+    if ([ '.js', '.json', '.yml', '.yaml' ].indexOf(path.extname(filename)) !== -1) {
       data = parseJSON(data, filename);
     }
     cb(null, {
@@ -248,9 +248,9 @@ var readFirstFile = function readFirstFile(uri, filenames, css, cb, examinedFile
 // This is a bootstrap function for calling readFirstFile.
 var readAbstractFile = function readAbstractFile(uri, abstractName, cb) {
   var gfn = getFileNames.bind(this),
-    gip = getIncludePaths.bind(this),
-    gbn = getBowerNames.bind(this),
-    css = this.options.importOnce.css;
+      gip = getIncludePaths.bind(this),
+      gbn = getBowerNames.bind(this),
+      css = this.options.importOnce.css;
 
   var files = gfn(abstractName);
 
@@ -266,13 +266,13 @@ var readAbstractFile = function readAbstractFile(uri, abstractName, cb) {
 };
 
 /**
- * Import the goodies!
- **/
+  * Import the goodies!
+**/
 var importer = function importer(uri, prev, done) {
   var isRealFile = fs.existsSync(prev),
-    io = importOnce.bind(this),
-    raf = readAbstractFile.bind(this),
-    file;
+      io = importOnce.bind(this),
+      raf = readAbstractFile.bind(this),
+      file;
 
   // Ensure options are available
   if (!this.options.importOnce) {
@@ -325,6 +325,6 @@ var importer = function importer(uri, prev, done) {
 };
 
 /**
- * Exports the importer
- **/
+  * Exports the importer
+**/
 module.exports = importer;
