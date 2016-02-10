@@ -229,25 +229,28 @@ var readFirstFile = function readFirstFile(uri, filenames, css, cb, examinedFile
   var filename = filenames.shift();
   examinedFiles = examinedFiles || [];
   examinedFiles.push(filename);
-  fs.readFile(filename, function(err, data) {
-    if (err) {
-      if (filenames.length) {
-        readFirstFile(uri, filenames, css, cb, examinedFiles);
-      }
-      else {
-        cb(new Error('Could not import `' + uri + '` from any of the following locations:\n  ' + examinedFiles.join('\n  ')));
-      }
+  try {
+    var data = fs.readFileSync(filename);
+  } catch (e) {
+    var err = e;
+  }
+  if (err) {
+    if (filenames.length) {
+      readFirstFile(uri, filenames, css, cb, examinedFiles);
     }
     else {
-      if ([ '.js', '.json', '.yml', '.yaml' ].indexOf(path.extname(filename)) !== -1) {
-        data = parseJSON(data, filename);
-      }
-      cb(null, {
-        'contents': data.toString(),
-        'file': filename
-      });
+      cb(new Error('Could not import `' + uri + '` from any of the following locations:\n  ' + examinedFiles.join('\n  ')));
     }
-  });
+  }
+  else {
+    if ([ '.js', '.json', '.yml', '.yaml' ].indexOf(path.extname(filename)) !== -1) {
+      data = parseJSON(data, filename);
+    }
+    cb(null, {
+      'contents': data.toString(),
+      'file': filename
+    });
+  }
 };
 
 // This is a bootstrap function for calling readFirstFile.
