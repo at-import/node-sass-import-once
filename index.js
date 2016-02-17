@@ -308,8 +308,7 @@ var importer = function importer(uri, prev, done) {
     file = path.resolve(path.dirname(prev), makeFsPath(uri));
     raf(uri, file, function (err, data) {
       if (err) {
-        console.log(err.toString());
-        done({});
+        done(err);
       }
       else {
         io(data, done);
@@ -319,8 +318,7 @@ var importer = function importer(uri, prev, done) {
   else {
     raf(uri, process.cwd(), function (err, data) {
       if (err) {
-        console.log(err.toString());
-        done({});
+        done(err);
       }
       else {
         io(data, done);
