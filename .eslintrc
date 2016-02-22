@@ -152,4 +152,3 @@ rules:
     - always
     - propertyName: false
       singleValue: false
-

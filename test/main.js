@@ -38,28 +38,28 @@ describe('import-once', function () {
     });
   });
 
-  it.only('should resolve import with Sass extensions', function(done) {
+  it('should resolve import with Sass extensions', function(done) {
     var file = filePath('import-scss.scss'),
         expectedIncludes = [
           file,
           filePath('foo/_index.scss')
         ];
 
-        sass.render({
-          'file': file,
-          'importer': importer
-        }, function (err, result) {
-          if (err) {
-            throw err;
-          }
-          should.exist(result);
-          result.stats.includedFiles.should.eql(expectedIncludes);
-          String(result.css).should.equal(
-            fs.readFileSync(path.join(__dirname, 'css/imported-scss.css'), 'utf8')
-          );
-          done();
-        });
-  })
+    sass.render({
+      'file': file,
+      'importer': importer
+    }, function (err, result) {
+      if (err) {
+        throw err;
+      }
+      should.exist(result);
+      result.stats.includedFiles.should.eql(expectedIncludes);
+      String(result.css).should.equal(
+        fs.readFileSync(path.join(__dirname, 'css/imported-scss.css'), 'utf8')
+      );
+      done();
+    });
+  });
 
   it('should import `index` files from a folder', function (done) {
     var file = filePath('import-index.scss'),
@@ -286,6 +286,29 @@ describe('import-once', function () {
       result.stats.includedFiles.should.eql(expectedIncludes);
       String(result.css).should.equal(
         fs.readFileSync(path.join(__dirname, 'css/basic-import-once.css'), 'utf8')
+      );
+      done();
+    });
+  });
+
+  it('should import a file with dots in its name', function(done) {
+    var file = filePath('import-with-dot.scss'),
+        expectedIncludes = [
+          file,
+          filePath('file.with.dot.scss')
+        ];
+
+    sass.render({
+      'file': file,
+      'importer': importer
+    }, function(err, result) {
+      if (err) {
+        throw err;
+      }
+      should.exist(result);
+      result.stats.includedFiles.should.eql(expectedIncludes);
+      String(result.css).should.equal(
+        fs.readFileSync(path.join(__dirname, 'css/import-with-dot.css'), 'utf8')
       );
       done();
     });
