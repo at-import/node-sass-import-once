@@ -42,7 +42,7 @@ var importOnce = function importOnce(data, done) {
  * they leave off the partial prefix and the suffix.
  * This code creates the possible extensions, whether it is a partial
  * and whether it is a directory index file having those
- * same possible variations. If the import contains an extension,
+ * same possible variations. If the import contains a valid extension,
  * then it is left alone.
  *
 **/
@@ -51,6 +51,8 @@ var getFileNames = function getFileNames(abstractName) {
       directory,
       basename;
 
+  // If the name has a Sass extension, treat it as a path to a real file, and as a fallback
+  // look for the same file with a prefix.
   if ([ '.scss', '.sass' ].indexOf(path.extname(abstractName)) !== -1) {
     directory = path.dirname(abstractName);
     basename = path.basename(abstractName);
@@ -59,9 +61,11 @@ var getFileNames = function getFileNames(abstractName) {
       names.push(path.join(directory, prefix + basename));
     });
   }
-  else if (path.extname(abstractName)) {
+  // If the name has a different valid extension, treat it as a path to a real file.
+  else if ([ '.css', '.json', '.yaml' ].indexOf(path.extname(abstractName)) !== -1) {
     names.push(abstractName);
   }
+  // Otherwise, the name is abstract and all variants should be searched.
   else {
     directory = path.dirname(abstractName);
     basename = path.basename(abstractName);
@@ -308,7 +312,7 @@ var importer = function importer(uri, prev, done) {
     file = path.resolve(path.dirname(prev), makeFsPath(uri));
     raf(uri, file, function (err, data) {
       if (err) {
-        console.log(err.toString());
+        console.log(err.toString()); // eslint-disable-line no-console
         done({});
       }
       else {
@@ -319,7 +323,7 @@ var importer = function importer(uri, prev, done) {
   else {
     raf(uri, process.cwd(), function (err, data) {
       if (err) {
-        console.log(err.toString());
+        console.log(err.toString()); // eslint-disable-line no-console
         done({});
       }
       else {
