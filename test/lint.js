@@ -15,9 +15,9 @@ describe('code style guide', function() {
         'no-console': 0
       }
     });
-    report = cli.executeOnFiles(['index.js']);
+    report = cli.executeOnFiles([ 'index.js' ]);
     if (report.errorCount > 0 || report.warningCount > 0) {
-      console.log(formatter(report.results));
+      console.log(formatter(report.results)); // eslint-disable-line no-console
     }
 
     should(report.errorCount).equal(0);
@@ -31,9 +31,9 @@ describe('code style guide', function() {
         'no-console': 2
       }
     });
-    report = cli.executeOnFiles(['test/main.js']);
+    report = cli.executeOnFiles([ 'test/main.js' ]);
     if (report.errorCount > 0 || report.warningCount > 0) {
-      console.log(formatter(report.results));
+      console.log(formatter(report.results)); // eslint-disable-line no-console
     }
 
     should(report.errorCount).equal(0);
@@ -47,9 +47,9 @@ describe('code style guide', function() {
         'no-console': 0
       }
     });
-    report = cli.executeOnFiles(['test/lint.js']);
+    report = cli.executeOnFiles([ 'test/lint.js' ]);
     if (report.errorCount > 0 || report.warningCount > 0) {
-      console.log(formatter(report.results));
+      console.log(formatter(report.results)); // eslint-disable-line no-console
     }
 
     should(report.errorCount).equal(0);

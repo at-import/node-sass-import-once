@@ -189,7 +189,7 @@ var parseJSON = function parseJSON(data, filename) {
   //////////////////////////////
   colors = fileReturn.match(/"(#([0-9a-f]{3}){1,2})"/g);
   if (colors) {
-    colors.forEach(function (color) {
+    colors.forEach(function(color) {
       fileReturn = fileReturn.replace(color, color.slice(1, -1));
     });
   }
@@ -200,7 +200,7 @@ var parseJSON = function parseJSON(data, filename) {
   //////////////////////////////
   colors = fileReturn.match(/"(rgb|rgba)\((\d{1,3}), (\d{1,3}), (\d{1,3})\)"/g);
   if (colors) {
-    colors.forEach(function (color) {
+    colors.forEach(function(color) {
       fileReturn = fileReturn.replace(color, color.slice(1, -1));
     });
   }
@@ -213,7 +213,7 @@ var parseJSON = function parseJSON(data, filename) {
   //////////////////////////////
   colors = fileReturn.match(/"(hsl|hsla)\((\d{1,3}), (\d{1,3}), (\d{1,3})\)"/g);
   if (colors) {
-    colors.forEach(function (color) {
+    colors.forEach(function(color) {
       fileReturn = fileReturn.replace(color, color.slice(1, -1));
     });
   }
@@ -306,9 +306,9 @@ var importer = function importer(uri, prev, done) {
 
   if (isRealFile) {
     file = path.resolve(path.dirname(prev), makeFsPath(uri));
-    raf(uri, file, function (err, data) {
+    raf(uri, file, function(err, data) {
       if (err) {
-        console.log(err.toString());
+        console.log(err.toString()); // eslint-disable-line no-console
         done({});
       }
       else {
@@ -317,9 +317,9 @@ var importer = function importer(uri, prev, done) {
     });
   }
   else {
-    raf(uri, process.cwd(), function (err, data) {
+    raf(uri, process.cwd(), function(err, data) {
       if (err) {
-        console.log(err.toString());
+        console.log(err.toString()); // eslint-disable-line no-console
         done({});
       }
       else {
