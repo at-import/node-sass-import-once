@@ -15,7 +15,7 @@ describe('code style guide', function() {
         'no-console': 0
       }
     });
-    report = cli.executeOnFiles(['../index.js']);
+    report = cli.executeOnFiles(['index.js']);
     if (report.errorCount > 0 || report.warningCount > 0) {
       console.log(formatter(report.results));
     }
@@ -31,7 +31,7 @@ describe('code style guide', function() {
         'no-console': 2
       }
     });
-    report = cli.executeOnFiles(['main.js']);
+    report = cli.executeOnFiles(['test/main.js']);
     if (report.errorCount > 0 || report.warningCount > 0) {
       console.log(formatter(report.results));
     }
@@ -47,7 +47,7 @@ describe('code style guide', function() {
         'no-console': 0
       }
     });
-    report = cli.executeOnFiles(['lint.js']);
+    report = cli.executeOnFiles(['test/lint.js']);
     if (report.errorCount > 0 || report.warningCount > 0) {
       console.log(formatter(report.results));
     }
