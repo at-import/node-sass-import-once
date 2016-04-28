@@ -225,14 +225,14 @@ var parseJSON = function parseJSON(data, filename) {
  * Asynchronously walks the file list until a match is found. If
  * no matches are found, calls the callback with an error
 **/
-var readFirstFile = function readFirstFile(uri, filenames, css, cb, examinedFiles) {
+var readFirstFile = function readFirstFile(uri, filenames, options, cb, examinedFiles) {
   var filename = filenames.shift();
   examinedFiles = examinedFiles || [];
   examinedFiles.push(filename);
   fs.readFile(filename, function(err, data) {
     if (err) {
       if (filenames.length) {
-        readFirstFile(uri, filenames, css, cb, examinedFiles);
+        readFirstFile(uri, filenames, options, cb, examinedFiles);
       }
       else {
         cb(new Error('Could not import `' + uri + '` from any of the following locations:\n  ' + examinedFiles.join('\n  ')));
@@ -242,13 +242,22 @@ var readFirstFile = function readFirstFile(uri, filenames, css, cb, examinedFile
       if ([ '.js', '.json', '.yml', '.yaml' ].indexOf(path.extname(filename)) !== -1) {
         data = parseJSON(data, filename);
       }
+
+      var contents = data.toString();
+      var tmp = options.importOnce.transformContent(filename, contents);
+      if (typeof tmp != 'undefined') {
+        contents = tmp;
+      }
+
       cb(null, {
-        'contents': data.toString(),
+        'contents': contents,
         'file': filename
       });
     }
   });
 };
+
+var noop = function noop () {};
 
 // This is a bootstrap function for calling readFirstFile.
 var readAbstractFile = function readAbstractFile(uri, abstractName, cb) {
@@ -267,7 +276,7 @@ var readAbstractFile = function readAbstractFile(uri, abstractName, cb) {
     files = files.concat(gbn(uri));
   }
 
-  readFirstFile(uri, files, css, cb);
+  readFirstFile(uri, files, this.options, cb);
 };
 
 /**
@@ -297,6 +306,10 @@ var importer = function importer(uri, prev, done) {
   // Set default css import
   if (!this.options.importOnce.css) {
     this.options.importOnce.css = false;
+  }
+
+  if (typeof this.options.importOnce.transformContent != 'function') {
+    this.options.importOnce.transformContent = noop;
   }
 
   // Create an import cache if it doesn't exist
