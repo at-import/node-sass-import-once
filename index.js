@@ -229,32 +229,35 @@ var readFirstFile = function readFirstFile(uri, filenames, options, cb, examined
   var filename = filenames.shift();
   examinedFiles = examinedFiles || [];
   examinedFiles.push(filename);
-  fs.readFile(filename, function(err, data) {
-    if (err) {
-      if (filenames.length) {
-        readFirstFile(uri, filenames, options, cb, examinedFiles);
+  console.log('readFirstFile filename', filename);
+  fs.readFile(filename, (function (filename) {
+    return function(err, data) {
+      if (err) {
+        if (filenames.length) {
+          readFirstFile(uri, filenames, options, cb, examinedFiles);
+        }
+        else {
+          cb(new Error('Could not import `' + uri + '` from any of the following locations:\n  ' + examinedFiles.join('\n  ')));
+        }
       }
       else {
-        cb(new Error('Could not import `' + uri + '` from any of the following locations:\n  ' + examinedFiles.join('\n  ')));
-      }
-    }
-    else {
-      if ([ '.js', '.json', '.yml', '.yaml' ].indexOf(path.extname(filename)) !== -1) {
-        data = parseJSON(data, filename);
-      }
+        if ([ '.js', '.json', '.yml', '.yaml' ].indexOf(path.extname(filename)) !== -1) {
+          data = parseJSON(data, filename);
+        }
 
-      var contents = data.toString();
-      var tmp = options.importOnce.transformContent(filename, contents);
-      if (typeof tmp != 'undefined') {
-        contents = tmp;
-      }
+        var contents = data.toString();
+        var tmp = options.importOnce.transformContent(filename, contents);
+        if (typeof tmp != 'undefined') {
+          contents = tmp;
+        }
 
-      cb(null, {
-        'contents': contents,
-        'file': filename
-      });
-    }
-  });
+        cb(null, {
+          'contents': contents,
+          'file': filename
+        });
+      }
+    };
+  })(filename));
 };
 
 var noop = function noop () {};
