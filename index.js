@@ -229,7 +229,6 @@ var readFirstFile = function readFirstFile(uri, filenames, options, cb, examined
   var filename = filenames.shift();
   examinedFiles = examinedFiles || [];
   examinedFiles.push(filename);
-  console.log('readFirstFile filename', filename);
   fs.readFile(filename, (function (filename) {
     return function(err, data) {
       if (err) {
