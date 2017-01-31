@@ -1,3 +1,5 @@
+Testing master against latest "node-sass": "^3.0.0-beta.5"
+
 # Import Once [![npm version](https://badge.fury.io/js/node-sass-import-once.svg)](http://badge.fury.io/js/node-sass-import-once) [![Build Status](https://travis-ci.org/at-import/node-sass-import-once.svg)](https://travis-ci.org/at-import/node-sass-import-once)
 
 General `import-once` importer for [`node-sass`](https://github.com/sass/node-sass) inspired by [Eyeglass](https://github.com/sass-eyeglass/eyeglass).
