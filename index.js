@@ -130,6 +130,7 @@ var getBowerNames = function getBowerNames(uri) {
     if (this.options.importOnce.css) {
       paths.push(path.resolve(bowerPath, core, 'dist', uri));
       paths.push(path.resolve(bowerPath, core, 'dist', 'css', uri));
+      paths.push(path.resolve(bowerPath, uri));
     }
   }
 
