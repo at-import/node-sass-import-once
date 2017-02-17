@@ -284,4 +284,16 @@ describe('import-once', function () {
       done();
     });
   });
+
+  it('should forward import errors to node-sass', function (done) {
+    var file = filePath('import-not-found.scss');
+
+    sass.render({
+      'file': file,
+      'importer': importer
+    }, function (err, result) {
+      should.exist(err);
+      done();
+    });
+  });
 });
